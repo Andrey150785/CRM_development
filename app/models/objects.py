@@ -1,5 +1,6 @@
+from datetime import datetime
 from decimal import Decimal
-from sqlalchemy import Integer, String, Boolean, Numeric, ForeignKey, Float
+from sqlalchemy import Integer, String, Boolean, Numeric, ForeignKey, Float, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
@@ -15,10 +16,10 @@ class Object(Base):
     image_url: Mapped[str | None] = mapped_column(String(200), nullable=True)
     on_sale: Mapped[bool] = mapped_column(Boolean, default=True)
     project_id: Mapped[int] = mapped_column(ForeignKey("projects.id"), nullable=False)
-    deal_id: Mapped[int | None] = mapped_column(ForeignKey("deals.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
 
     project: Mapped["Project"] = relationship("Project", back_populates="objects")
-    deal: Mapped["Deal"] = relationship("Deal", back_populates="objects")
+    deal: Mapped["Deal"] = relationship("Deal", back_populates="object", uselist=False, cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f"Object(id={self.id}, number={self.number}, price={self.price}, in_sale={self.in_sale}, project_id={self.project_id}, created_at={self.created_at})"
+        return f"Object(id={self.id}, number={self.number}, price={self.price}, on_sale={self.on_sale}, project_id={self.project_id}, created_at={self.created_at})"

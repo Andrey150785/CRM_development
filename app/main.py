@@ -1,10 +1,13 @@
 from contextlib import asynccontextmanager
+# Импортируем необходимые библиотеки
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
-from fastapi import FastAPI
+# Импортируем роутеры
+from app.routers import project_router, object_router
 
 
 # from app.database import create_db_and_tables
-# from app.routers import categories, posts
 
 
 @asynccontextmanager
@@ -22,8 +25,17 @@ app = FastAPI(
 )
 
 
-# app.include_router(categories.router)
-# app.include_router(posts.router)
+app.include_router(project_router)
+app.include_router(object_router)
+
+# Настраиваем CORS для взаимодействия с фронтендом
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")

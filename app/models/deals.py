@@ -1,5 +1,5 @@
 from decimal import Decimal
-from sqlalchemy import Integer, String, Numeric, Boolean, Date, Enum, ForeignKey, Table
+from sqlalchemy import Integer, Numeric, Boolean, Date, Enum, ForeignKey
 from datetime import date
 import enum
 
@@ -28,10 +28,10 @@ class Deal(Base):
     deal_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
 
     client_id: Mapped[int] = mapped_column(ForeignKey("clients.id"), nullable=False)
-    object_id: Mapped[int] = mapped_column(ForeignKey("objects.id"), nullable=False)
+    object_id: Mapped[int] = mapped_column(ForeignKey("objects.id"), unique=True, nullable=False)
 
     client: Mapped["Client"] = relationship("Client", back_populates="deals")
-    objects: Mapped[list["Object"]] = relationship("Object", back_populates="deal")
+    object: Mapped["Object"] = relationship("Object", back_populates="deal")
 
     def __repr__(self):
-        return f"Deal(id={self.id}, client_name={self.client_name}, is_completed={self.is_completed}, deal_date={self.deal_date}, status={self.status})"
+        return f"Deal(id={self.id}, client_name={self.client_id}, is_completed={self.is_completed}, deal_date={self.deal_date}, status={self.status})"

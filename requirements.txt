@@ -2,4 +2,6 @@ fastapi
 uvicorn
 sqlalchemy
 aiosqlite
+asyncpg
+pydantic
 greenlet
