@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, EmailStr
 
 
 class Project(BaseModel):
@@ -32,6 +32,7 @@ class ClientCreate(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class Object(BaseModel):
     id: int = Field(..., description='id of actual object')
     number: str = Field(..., description='number of actual object')
@@ -56,6 +57,7 @@ class ObjectCreate(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class Deal(BaseModel):
     id: int = Field(..., description='id of actual deal')
     is_completed: bool = Field(False, description='is actual deal completed')
@@ -74,4 +76,19 @@ class DealCreate(BaseModel):
     client_id: int = Field(..., description='id of actual client')
     object_id: int = Field(..., description='id of actual object')
 
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserCreate(BaseModel):
+    email: EmailStr = Field(description="Email пользователя")
+    password: str = Field(min_length=8, description="Пароль (минимум 8 символов)")
+    role: str = Field(default="reader", pattern="^(reader|admin)$", description="Роль: 'reader' or 'admin'")
+
+
+class User(BaseModel):
+    id: int
+    email: EmailStr
+    password: str
+    is_active: bool
+    role: str
     model_config = ConfigDict(from_attributes=True)
