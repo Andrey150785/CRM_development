@@ -68,14 +68,14 @@ async def create_product(new_object: ObjectCreate, db: AsyncSession = Depends(ge
     """
     Создаёт новый товар.
     """
-    # Проверяем, существует ли активная категория
+    # Проверяем, существует ли активный проект
     result = await db.scalars(
-        select(ProjectModel).where(ProjectModel.id == new_object.category_id,
+        select(ProjectModel).where(ProjectModel.id == new_object.project_id,
                                    ProjectModel.is_active == True))
     db_project = result.first()
     if not db_project:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Category not found or inactive")
+                            detail="Project not found or inactive")
 
     # Создаём товар
     db_object = ObjectModel(**new_object.model_dump())
@@ -131,15 +131,14 @@ async def delete_object(object_id: int, db: AsyncSession = Depends(get_async_db)
 
 
 @router.delete("/")
-async def delete_all_projects(db: AsyncSession = Depends(get_async_db)) -> dict:
+async def delete_all_objects(db: AsyncSession = Depends(get_async_db)) -> dict:
     stmt = select(ObjectModel).where(ObjectModel.on_sale == True)
     result = await db.scalars(stmt)
     db_objects = result.all()
 
     for obj in db_objects:
         await db.execute(
-            update(ProjectModel).where(ProjectModel.id == obj.id).values(is_active=False))
-        await db.commit()
-        await db.refresh(db_objects)
+            update(ObjectModel).where(ObjectModel.id == obj.id).values(on_sale=False))
 
-    return {"status": "success", "message": "Projects were deleted"}
+    await db.commit()
+    return {"status": "success", "message": "Objects were deleted"}

@@ -34,7 +34,7 @@ async def create_project(project: ProjectCreate, db: AsyncSession = Depends(get_
     if project.parent_id:
         stmt = select(ProjectModel).where(ProjectModel.id == project.parent_id,
                                           ProjectModel.is_active == True)
-        result = await db.execute(stmt)
+        result = await db.scalars(stmt)
         parent = result.first()
         if not parent:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Parent project not found')
@@ -74,6 +74,7 @@ async def update_project(project_id: int, project: ProjectCreate, db: AsyncSessi
     )
 
     await db.commit()
+    await db.refresh(db_project)
     return db_project
 
 
@@ -91,6 +92,7 @@ async def delete_project(project_id: int, db: AsyncSession = Depends(get_async_d
         where(ProjectModel.id == project_id).
         values(is_active=False))
     await db.commit()
+    await db.refresh(db_project)
     return db_project
 
 
@@ -103,7 +105,7 @@ async def delete_all_projects(db: AsyncSession = Depends(get_async_db)) -> dict:
     for project in db_projects:
         await db.execute(
             update(ProjectModel).where(ProjectModel.id == project.id).values(is_active=False))
-        await db.commit()
-        await db.refresh(db_projects)
+
+    await db.commit()
 
     return {"status": "success", "message": "Projects were deleted"}

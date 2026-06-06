@@ -23,11 +23,13 @@ class ProjectCreate(BaseModel):
 class Client(BaseModel):
     id: int = Field(..., description='id of actual client')
     name: str = Field(..., description='name of actual client')
+    phone_number: str = Field(..., description='phone number of actual client')
     is_active: bool = Field(True, description='is actual client active')
 
 
 class ClientCreate(BaseModel):
     name: str = Field(..., min_length=3, max_length=50, description='name of actual client')
+    phone_number: str = Field(..., description='phone number of actual client')
     is_active: bool = Field(True, description='is actual client active')
 
     model_config = ConfigDict(from_attributes=True)
@@ -42,7 +44,6 @@ class Object(BaseModel):
     image_url: str | None = Field(None, description='image url of actual object')
     on_sale: bool = Field(True, description='is actual object on sale')
     project_id: int = Field(..., description='id of actual project')
-    deal_id: int | None = Field(None, description='id of actual deal')
 
 
 class ObjectCreate(BaseModel):
@@ -53,7 +54,6 @@ class ObjectCreate(BaseModel):
     image_url: str | None = Field(None, description='image url of actual object')
     on_sale: bool = Field(True, description='is actual object on sale')
     project_id: int = Field(..., description='id of actual project')
-    deal_id: int | None = Field(None, description='id of actual deal')
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -81,14 +81,13 @@ class DealCreate(BaseModel):
 
 class UserCreate(BaseModel):
     email: EmailStr = Field(description="Email пользователя")
-    password: str = Field(min_length=8, description="Пароль (минимум 8 символов)")
+    hashed_password: str = Field(min_length=8, description="Пароль (минимум 8 символов)")
     role: str = Field(default="reader", pattern="^(reader|admin)$", description="Роль: 'reader' or 'admin'")
 
 
 class User(BaseModel):
     id: int
     email: EmailStr
-    password: str
     is_active: bool
     role: str
     model_config = ConfigDict(from_attributes=True)

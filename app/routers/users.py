@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.models.users import User as UserModel
 from app.schemas import UserCreate, User as UserSchema
 from app.db_depends import get_async_db
-from app.auth import hash_password
-
+from app.auth import hash_password, verify_password, create_access_token
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -42,7 +42,6 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_async_db)
     """
     Регистрирует нового пользователя с ролью 'reader' или 'admin'.
     """
-
     # Проверка уникальности email
     result = await db.scalars(select(UserModel).where(UserModel.email == user.email))
     if result.first():
@@ -52,7 +51,7 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_async_db)
     # Создание объекта пользователя с хешированным паролем
     db_user = UserModel(
         email=user.email,
-        hashed_password=hash_password(user.password),
+        hashed_password=hash_password(user.hashed_password),
         role=user.role
     )
 
@@ -60,6 +59,25 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_async_db)
     db.add(db_user)
     await db.commit()
     return db_user
+
+
+@router.post("/token")
+async def login(form_data: OAuth2PasswordRequestForm = Depends(),
+                db: AsyncSession = Depends(get_async_db)):
+    """
+    Аутентифицирует пользователя и возвращает JWT с email, role и id.
+    """
+    result = await db.scalars(
+        select(UserModel).where(UserModel.email == form_data.username, UserModel.is_active == True))
+    db_user = result.first()
+    if not db_user or not verify_password(form_data.password, db_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token = create_access_token(data={"sub": db_user.email, "role": db_user.role, "id": db_user.id})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.put("/{user_id}", response_model=UserSchema)
@@ -78,14 +96,14 @@ async def update_user(user_id: int, user: UserCreate, db: AsyncSession = Depends
         update(UserModel).
         where(UserModel.id == user_id).
         values(email=user.email,
-        hashed_password=hash_password(user.password),
-        role=user.role))
+               hashed_password=hash_password(user.hashed_password),
+               role=user.role))
     await db.commit()
     await db.refresh(db_user)
     return db_user
 
 
-@router.delete("/{user_id}", response_model=UserSchema, status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{user_id}", status_code=204)
 async def delete_user(user_id: int, db: AsyncSession = Depends(get_async_db)):
     """
     Удаляет пользователя по его ID.
@@ -111,7 +129,7 @@ async def delete_all_users(db: AsyncSession = Depends(get_async_db)) -> dict:
     for user in db_users:
         await db.execute(
             update(UserModel).where(UserModel.id == user.id).values(is_active=False))
-        await db.commit()
-        await db.refresh(db_users)
+
+    await db.commit()
 
     return {"status": "success", "message": "Users were deleted"}
