@@ -29,7 +29,9 @@ class Deal(Base):
 
     client_id: Mapped[int] = mapped_column(ForeignKey("clients.id"), nullable=False)
     object_id: Mapped[int] = mapped_column(ForeignKey("objects.id"), unique=True, nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
 
+    user: Mapped["User"] = relationship("User", back_populates="deals")
     client: Mapped["Client"] = relationship("Client", back_populates="deals")
     object: Mapped["Object"] = relationship("Object", back_populates="deal")
 

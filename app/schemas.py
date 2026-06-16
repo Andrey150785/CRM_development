@@ -66,6 +66,7 @@ class Deal(BaseModel):
     deal_price: float = Field(..., description='price of actual deal')
     client_id: int = Field(..., description='id of actual client')
     object_id: int = Field(..., description='id of actual object')
+    user_id: int = Field(..., description='id of actual user')
 
 
 class DealCreate(BaseModel):
@@ -75,6 +76,7 @@ class DealCreate(BaseModel):
     deal_price: float = Field(..., description='price of actual deal')
     client_id: int = Field(..., description='id of actual client')
     object_id: int = Field(..., description='id of actual object')
+    user_id: int = Field(..., description='id of actual user')
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -91,3 +93,7 @@ class User(BaseModel):
     is_active: bool
     role: str
     model_config = ConfigDict(from_attributes=True)
+
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str

@@ -16,5 +16,6 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     role: Mapped[str] = mapped_column(String, default="reader")  # "reader" or "admin"
 
+    deals: Mapped[list["Deal"]] = relationship("Deal", back_populates="user")
     def __repr__(self):
         return f"User(id={self.id}, email={self.email}, is_active={self.is_active})"
