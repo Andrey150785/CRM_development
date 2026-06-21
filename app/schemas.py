@@ -81,6 +81,18 @@ class DealCreate(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class DealList(BaseModel):
+    """
+    Список пагинации сделок пользователя
+    """
+    items: list[Deal] = Field(description='Список сделок')
+    total: int = Field(ge=0, description='Общее количество сделок')
+    page: int = Field(ge=1, description='Номер страницы')
+    page_page: int = Field(ge=1, description='Количество элементов на странице')
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class UserCreate(BaseModel):
     email: EmailStr = Field(description="Email пользователя")
     hashed_password: str = Field(min_length=8, description="Пароль (минимум 8 символов)")

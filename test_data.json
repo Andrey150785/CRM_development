@@ -1,0 +1,432 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "name": "Project Alpha",
+      "finish_time": "2026-12-31T23:59:59",
+      "is_active": true,
+      "parent_id": null
+    },
+    {
+      "id": 2,
+      "name": "Project Beta",
+      "finish_time": "2026-11-30T18:00:00",
+      "is_active": true,
+      "parent_id": null
+    },
+    {
+      "id": 3,
+      "name": "Project Gamma",
+      "finish_time": "2027-01-15T12:00:00",
+      "is_active": true,
+      "parent_id": 1
+    },
+    {
+      "id": 4,
+      "name": "Project Delta",
+      "finish_time": "2026-10-01T09:00:00",
+      "is_active": false,
+      "parent_id": null
+    },
+    {
+      "id": 5,
+      "name": "Project Epsilon",
+      "finish_time": "2027-03-20T15:30:00",
+      "is_active": true,
+      "parent_id": 2
+    },
+    {
+      "id": 6,
+      "name": "Project Zeta",
+      "finish_time": "2026-08-25T10:00:00",
+      "is_active": true,
+      "parent_id": null
+    },
+    {
+      "id": 7,
+      "name": "Project Eta",
+      "finish_time": "2027-06-10T14:00:00",
+      "is_active": true,
+      "parent_id": 3
+    },
+    {
+      "id": 8,
+      "name": "Project Theta",
+      "finish_time": "2026-09-05T08:00:00",
+      "is_active": true,
+      "parent_id": null
+    },
+    {
+      "id": 9,
+      "name": "Project Iota",
+      "finish_time": "2027-04-18T16:45:00",
+      "is_active": false,
+      "parent_id": 4
+    },
+    {
+      "id": 10,
+      "name": "Project Kappa",
+      "finish_time": "2026-12-01T11:00:00",
+      "is_active": true,
+      "parent_id": null
+    }
+  ],
+  "clients": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "phone_number": "+7 999 111-22-33",
+      "is_active": true
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "phone_number": "+7 999 222-33-44",
+      "is_active": true
+    },
+    {
+      "id": 3,
+      "name": "Bob Johnson",
+      "phone_number": "+7 999 333-44-55",
+      "is_active": true
+    },
+    {
+      "id": 4,
+      "name": "Alice Brown",
+      "phone_number": "+7 999 444-55-66",
+      "is_active": false
+    },
+    {
+      "id": 5,
+      "name": "Charlie Davis",
+      "phone_number": "+7 999 555-66-77",
+      "is_active": true
+    },
+    {
+      "id": 6,
+      "name": "Eva Wilson",
+      "phone_number": "+7 999 666-77-88",
+      "is_active": true
+    },
+    {
+      "id": 7,
+      "name": "Frank Miller",
+      "phone_number": "+7 999 777-88-99",
+      "is_active": true
+    },
+    {
+      "id": 8,
+      "name": "Grace Lee",
+      "phone_number": "+7 999 888-99-00",
+      "is_active": false
+    },
+    {
+      "id": 9,
+      "name": "Henry Martin",
+      "phone_number": "+7 999 000-11-22",
+      "is_active": true
+    },
+    {
+      "id": 10,
+      "name": "Ivy Taylor",
+      "phone_number": "+7 999 123-45-67",
+      "is_active": true
+    }
+  ],
+  "objects": [
+    {
+      "id": 1,
+      "number": "A-101",
+      "floor": 1,
+      "square": 45.5,
+      "price": 250000.00,
+      "image_url": "https://example.com/img1.jpg",
+      "on_sale": true,
+      "project_id": 1,
+      "created_at": "2026-06-19T10:00:00"
+    },
+    {
+      "id": 2,
+      "number": "B-202",
+      "floor": 2,
+      "square": 67.2,
+      "price": 340000.00,
+      "image_url": "https://example.com/img2.jpg",
+      "on_sale": false,
+      "project_id": 2,
+      "created_at": "2026-06-19T10:05:00"
+    },
+    {
+      "id": 3,
+      "number": "C-303",
+      "floor": 3,
+      "square": 82.0,
+      "price": 410000.00,
+      "image_url": null,
+      "on_sale": true,
+      "project_id": 1,
+      "created_at": "2026-06-19T10:10:00"
+    },
+    {
+      "id": 4,
+      "number": "D-404",
+      "floor": 4,
+      "square": 55.8,
+      "price": 280000.00,
+      "image_url": "https://example.com/img4.jpg",
+      "on_sale": true,
+      "project_id": 3,
+      "created_at": "2026-06-19T10:15:00"
+    },
+    {
+      "id": 5,
+      "number": "E-505",
+      "floor": 5,
+      "square": 93.4,
+      "price": 520000.00,
+      "image_url": "https://example.com/img5.jpg",
+      "on_sale": false,
+      "project_id": 2,
+      "created_at": "2026-06-19T10:20:00"
+    },
+    {
+      "id": 6,
+      "number": "F-601",
+      "floor": 6,
+      "square": 38.0,
+      "price": 190000.00,
+      "image_url": null,
+      "on_sale": true,
+      "project_id": 4,
+      "created_at": "2026-06-19T10:25:00"
+    },
+    {
+      "id": 7,
+      "number": "G-702",
+      "floor": 7,
+      "square": 74.5,
+      "price": 395000.00,
+      "image_url": "https://example.com/img7.jpg",
+      "on_sale": true,
+      "project_id": 5,
+      "created_at": "2026-06-19T10:30:00"
+    },
+    {
+      "id": 8,
+      "number": "H-803",
+      "floor": 8,
+      "square": 61.3,
+      "price": 310000.00,
+      "image_url": "https://example.com/img8.jpg",
+      "on_sale": false,
+      "project_id": 6,
+      "created_at": "2026-06-19T10:35:00"
+    },
+    {
+      "id": 9,
+      "number": "I-904",
+      "floor": 9,
+      "square": 88.7,
+      "price": 460000.00,
+      "image_url": null,
+      "on_sale": true,
+      "project_id": 7,
+      "created_at": "2026-06-19T10:40:00"
+    },
+    {
+      "id": 10,
+      "number": "J-1005",
+      "floor": 10,
+      "square": 50.0,
+      "price": 265000.00,
+      "image_url": "https://example.com/img10.jpg",
+      "on_sale": true,
+      "project_id": 8,
+      "created_at": "2026-06-19T10:45:00"
+    }
+  ],
+  "deals": [
+    {
+      "id": 1,
+      "is_completed": false,
+      "deal_date": "2026-06-19",
+      "status": "on_sale",
+      "deal_price": 250000.00,
+      "client_id": 1,
+      "object_id": 1,
+      "user_id": 1
+    },
+    {
+      "id": 2,
+      "is_completed": false,
+      "deal_date": "2026-06-18",
+      "status": "reservation",
+      "deal_price": 340000.00,
+      "client_id": 2,
+      "object_id": 2,
+      "user_id": 2
+    },
+    {
+      "id": 3,
+      "is_completed": false,
+      "deal_date": "2026-06-17",
+      "status": "confirmed",
+      "deal_price": 410000.00,
+      "client_id": 3,
+      "object_id": 3,
+      "user_id": 3
+    },
+    {
+      "id": 4,
+      "is_completed": false,
+      "deal_date": "2026-06-16",
+      "status": "signing",
+      "deal_price": 280000.00,
+      "client_id": 4,
+      "object_id": 4,
+      "user_id": 1
+    },
+    {
+      "id": 5,
+      "is_completed": true,
+      "deal_date": "2026-06-15",
+      "status": "completed",
+      "deal_price": 520000.00,
+      "client_id": 5,
+      "object_id": 5,
+      "user_id": 2
+    },
+    {
+      "id": 6,
+      "is_completed": false,
+      "deal_date": "2026-06-14",
+      "status": "payment",
+      "deal_price": 190000.00,
+      "client_id": 6,
+      "object_id": 6,
+      "user_id": 3
+    },
+    {
+      "id": 7,
+      "is_completed": false,
+      "deal_date": "2026-06-13",
+      "status": "cancelled",
+      "deal_price": 395000.00,
+      "client_id": 7,
+      "object_id": 7,
+      "user_id": 1
+    },
+    {
+      "id": 8,
+      "is_completed": false,
+      "deal_date": "2026-06-12",
+      "status": "on_sale",
+      "deal_price": 310000.00,
+      "client_id": 8,
+      "object_id": 8,
+      "user_id": 2
+    },
+    {
+      "id": 9,
+      "is_completed": false,
+      "deal_date": "2026-06-11",
+      "status": "reservation",
+      "deal_price": 460000.00,
+      "client_id": 9,
+      "object_id": 9,
+      "user_id": 3
+    },
+    {
+      "id": 10,
+      "is_completed": false,
+      "deal_date": "2026-06-10",
+      "status": "confirmed",
+      "deal_price": 265000.00,
+      "client_id": 10,
+      "object_id": 10,
+      "user_id": 1
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "email": "user1@example.com",
+      "hashed_password": "hashed_password_1",
+      "created_at": "2026-06-01T08:00:00",
+      "is_active": true,
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "email": "user2@example.com",
+      "hashed_password": "hashed_password_2",
+      "created_at": "2026-06-02T09:00:00",
+      "is_active": true,
+      "role": "reader"
+    },
+    {
+      "id": 3,
+      "email": "user3@example.com",
+      "hashed_password": "hashed_password_3",
+      "created_at": "2026-06-03T10:00:00",
+      "is_active": true,
+      "role": "reader"
+    },
+    {
+      "id": 4,
+      "email": "user4@example.com",
+      "hashed_password": "hashed_password_4",
+      "created_at": "2026-06-04T11:00:00",
+      "is_active": false,
+      "role": "reader"
+    },
+    {
+      "id": 5,
+      "email": "user5@example.com",
+      "hashed_password": "hashed_password_5",
+      "created_at": "2026-06-05T12:00:00",
+      "is_active": true,
+      "role": "admin"
+    },
+    {
+      "id": 6,
+      "email": "user6@example.com",
+      "hashed_password": "hashed_password_6",
+      "created_at": "2026-06-06T13:00:00",
+      "is_active": true,
+      "role": "reader"
+    },
+    {
+      "id": 7,
+      "email": "user7@example.com",
+      "hashed_password": "hashed_password_7",
+      "created_at": "2026-06-07T14:00:00",
+      "is_active": true,
+      "role": "reader"
+    },
+    {
+      "id": 8,
+      "email": "user8@example.com",
+      "hashed_password": "hashed_password_8",
+      "created_at": "2026-06-08T15:00:00",
+      "is_active": false,
+      "role": "admin"
+    },
+    {
+      "id": 9,
+      "email": "user9@example.com",
+      "hashed_password": "hashed_password_9",
+      "created_at": "2026-06-09T16:00:00",
+      "is_active": true,
+      "role": "reader"
+    },
+    {
+      "id": 10,
+      "email": "user10@example.com",
+      "hashed_password": "hashed_password_10",
+      "created_at": "2026-06-10T17:00:00",
+      "is_active": true,
+      "role": "reader"
+    }
+  ]
+}

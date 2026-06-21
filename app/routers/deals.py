@@ -1,22 +1,35 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select, update
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy import select, update, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.deals import Deal as DealModel
 from app.models.users import User as UserModel
-from app.schemas import Deal as DealSchema, DealCreate
+from app.schemas import Deal as DealSchema, DealCreate, DealList
 from app.db_depends import get_async_db
 
 from app.auth import get_current_user
-
 
 router = APIRouter(prefix='/deals', tags=['deals'])
 
 
 @router.get('/', response_model=list[DealSchema])
-async def get_all_deals(db: AsyncSession = Depends(get_async_db)):
-    stmt = select(DealModel).where(DealModel.is_completed == False, DealModel.status != "canceled")
-    result = await db.scalars(stmt)
+async def get_all_deals(
+        page: int = Query(1, ge=1),
+        page_size: int = Query(20, ge=1, le=100),
+        db: AsyncSession = Depends(get_async_db)):
+    """
+    Возвращает список активных сделок в соответствии с указанными параметрами пагинации.
+    :param page:
+    :param page_size:
+    :param db:
+    :return:
+    """
+    total_stmt = select(func.count()).select_from(DealModel).where(DealModel.is_completed == False,
+                                                                   DealModel.status != "canceled")
+    total_count = await db.scalar(total_stmt) or 0
+
+    deal_stmt = select(DealModel).where(DealModel.is_completed == False, DealModel.status != "canceled").order_by(DealModel.id).offset((page - 1) * page_size).limit(page_size)
+    result = await db.scalars(deal_stmt)
     db_deals = result.all()
     return db_deals
 
@@ -128,7 +141,8 @@ async def update_deal(deal_id: int, new_deal: DealCreate, db: AsyncSession = Dep
 
 
 @router.delete("/{deal_id}", response_model=DealSchema)
-async def delete_deal(deal_id: int, db: AsyncSession = Depends(get_async_db), current_user: UserModel = Depends(get_current_user)):
+async def delete_deal(deal_id: int, db: AsyncSession = Depends(get_async_db),
+                      current_user: UserModel = Depends(get_current_user)):
     """
     Удаляет сделку, привязанную к активному пользователю.
     :param deal_id:

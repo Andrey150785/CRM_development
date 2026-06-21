@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 # Импортируем роутеры
-from app.routers import project_router, object_router, user_router, deal_router
+from app.routers import project_router, object_router, user_router, deal_router, client_router
 
 
 # from app.database import create_db_and_tables
@@ -29,6 +29,7 @@ app.include_router(project_router)
 app.include_router(object_router)
 app.include_router(user_router)
 app.include_router(deal_router)
+app.include_router(client_router)
 
 
 # Настраиваем CORS для взаимодействия с фронтендом
