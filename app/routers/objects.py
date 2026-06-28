@@ -1,21 +1,35 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select, update
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy import select, update, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.projects import Project as ProjectModel
 from app.models.objects import Object as ObjectModel
-from app.schemas import Object as ObjectSchema, ObjectCreate
+from app.schemas import Object as ObjectSchema, ObjectCreate, ObjectList
 from app.db_depends import get_async_db
 
 router = APIRouter(prefix='/objects', tags=['objects'])
 
 
-@router.get('/', response_model=list[ObjectSchema])
-async def get_all_objects(db: AsyncSession = Depends(get_async_db)):
-    stmt = select(ObjectModel).where(ObjectModel.on_sale == True)
+@router.get('/', response_model=ObjectList)
+async def get_all_objects(
+        page: int = Query(1, ge=1),
+        page_size: int = Query(20, ge=1, le=100),
+        db: AsyncSession = Depends(get_async_db)):
+    """
+    Возвращает список квартир в продаже в соответствии с указанными параметрами пагинации.
+    :param page:
+    :param page_size:
+    :param db:
+    :return:
+    """
+    total_stmt = select(func.count()).select_from(ObjectModel).where(ObjectModel.on_sale == True)
+    total = await db.scalar(total_stmt) or 0
+
+    stmt = (select(ObjectModel).where(ObjectModel.on_sale == True).order_by(ObjectModel.id).offset((page - 1) * page_size).limit(page_size))
     result = await db.scalars(stmt)
     db_objects = result.all()
-    return db_objects
+    return {
+        "objects": db_objects, "total": total, "page": page, "page_size": page_size} if db_objects else "No objects"
 
 
 @router.get("/project/{project_id}", response_model=list[ObjectSchema])

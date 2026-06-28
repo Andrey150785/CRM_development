@@ -1,0 +1,10 @@
+__pycache__/
+env/
+.env
+*.log
+logs/
+*.sqlite3
+.pytest_cache/
+.mypy_cache/
+.flats_DP.csv
+.feed.csv

@@ -58,18 +58,20 @@ class ObjectCreate(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class ObjectList(BaseModel):
+    """
+    Список пагинации сделок пользователя
+    """
+    objects: list[Object] = Field(description='Список квартир')
+    total: int = Field(ge=0, description='Общее количество квартир')
+    page: int = Field(ge=1, description='Номер страницы')
+    page_size: int = Field(ge=1, description='Количество элементов на странице')
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class Deal(BaseModel):
     id: int = Field(..., description='id of actual deal')
-    is_completed: bool = Field(False, description='is actual deal completed')
-    deal_date: datetime = Field(..., description='date of actual deal')
-    status: str = Field(..., description='status of actual deal')
-    deal_price: float = Field(..., description='price of actual deal')
-    client_id: int = Field(..., description='id of actual client')
-    object_id: int = Field(..., description='id of actual object')
-    user_id: int = Field(..., description='id of actual user')
-
-
-class DealCreate(BaseModel):
     is_completed: bool = Field(False, description='is actual deal completed')
     deal_date: datetime = Field(..., description='date of actual deal')
     status: str = Field(..., description='status of actual deal')
@@ -81,14 +83,25 @@ class DealCreate(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class DealCreate(BaseModel):
+    is_completed: bool = Field(False, description='is actual deal completed')
+    status: str = Field(..., description='status of actual deal')
+    deal_price: float = Field(..., description='price of actual deal')
+    client_id: int = Field(..., description='id of actual client')
+    object_id: int = Field(..., description='id of actual object')
+    # user_id: int = Field(..., description='id of actual user')
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class DealList(BaseModel):
     """
     Список пагинации сделок пользователя
     """
-    items: list[Deal] = Field(description='Список сделок')
+    deals: list[Deal] = Field(description='Список сделок')
     total: int = Field(ge=0, description='Общее количество сделок')
     page: int = Field(ge=1, description='Номер страницы')
-    page_page: int = Field(ge=1, description='Количество элементов на странице')
+    page_size: int = Field(ge=1, description='Количество элементов на странице')
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -104,6 +117,7 @@ class User(BaseModel):
     email: EmailStr
     is_active: bool
     role: str
+
     model_config = ConfigDict(from_attributes=True)
 
 

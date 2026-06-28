@@ -12,7 +12,7 @@ from app.auth import get_current_user
 router = APIRouter(prefix='/deals', tags=['deals'])
 
 
-@router.get('/', response_model=list[DealSchema])
+@router.get('/', response_model=DealList)
 async def get_all_deals(
         page: int = Query(1, ge=1),
         page_size: int = Query(20, ge=1, le=100),
@@ -28,10 +28,16 @@ async def get_all_deals(
                                                                    DealModel.status != "canceled")
     total_count = await db.scalar(total_stmt) or 0
 
-    deal_stmt = select(DealModel).where(DealModel.is_completed == False, DealModel.status != "canceled").order_by(DealModel.id).offset((page - 1) * page_size).limit(page_size)
+    deal_stmt = (select(DealModel).where(DealModel.is_completed == False, DealModel.status != "canceled")
+                 .order_by(DealModel.id).offset((page - 1) * page_size).limit(page_size))
     result = await db.scalars(deal_stmt)
     db_deals = result.all()
-    return db_deals
+    return {
+        "deals": db_deals,
+        "total": total_count,
+        "page": page,
+        "page_size": page_size
+    }
 
 
 @router.get("/user/{user_id}", response_model=list[DealSchema])
@@ -81,14 +87,14 @@ async def get_object(deal_id: int, db: AsyncSession = Depends(get_async_db)):
 
 
 @router.post("/", response_model=DealSchema, status_code=status.HTTP_201_CREATED)
-async def create_product(new_deal: DealCreate, db: AsyncSession = Depends(get_async_db),
-                         current_user: UserModel = Depends(get_current_user)):
+async def create_deal(new_deal: DealCreate, db: AsyncSession = Depends(get_async_db),
+                      current_user: UserModel = Depends(get_current_user)):
     """
     Создаёт новую сделку, привязанную к активному пользователю.
     """
     # Проверяем, существует ли активный пользователь
     result = await db.scalars(
-        select(UserModel).where(UserModel.id == new_deal.user_id,
+        select(UserModel).where(UserModel.id == current_user.id,
                                 UserModel.is_active == True))
     db_user = result.first()
     if not db_user:
