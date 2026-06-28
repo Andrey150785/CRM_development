@@ -350,14 +350,13 @@
         "hashed_password": "hashed_password_9",
         "is_active": true,
         "role": "reader"
-    }
+    },
+    {
+    "id": 21,
+    "email": "aendov@example.com",
+    "hashed_password": "737856290",
+    "is_active": true,
+    "role": "reader"
+  }
 ]
-},
-{
-  "is_completed": false,
-  "deal_date": "2026-06-23T19:10:54.570Z",
-  "status": "reserved",
-  "deal_price": 11250000,
-  "client_id": 1,
-  "object_id": 1
 }

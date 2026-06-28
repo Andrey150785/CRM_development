@@ -10,7 +10,7 @@ from app.database import Base
 
 class DealStatus(enum.Enum):
     on_sale = "on_sale"
-    reservation = "reserved"
+    reserved = "reserved"
     confirmed = "confirmed"
     signing = "signing"
     payment = "payment"

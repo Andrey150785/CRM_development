@@ -8,3 +8,4 @@ logs/
 .mypy_cache/
 .flats_DP.csv
 .feed.csv
+.test_data.json

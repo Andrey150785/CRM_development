@@ -10,26 +10,88 @@ from app.db_depends import get_async_db
 router = APIRouter(prefix='/objects', tags=['objects'])
 
 
-@router.get('/', response_model=ObjectList)
-async def get_all_objects(
+@router.get("/", response_model=ObjectList)
+async def get_all_objects_with_filters(
         page: int = Query(1, ge=1),
         page_size: int = Query(20, ge=1, le=100),
+        project_id: int | None = Query(
+            None, description="ID проекта для фильтрации"),
+        min_price: float | None = Query(
+            None, ge=0, description="Минимальная цена объекта"),
+        max_price: float | None = Query(
+            None, ge=0, description="Максимальная цена объекта"),
+        min_square: float | None = Query(None, ge=0, description="Минимальная площадь объекта"),
+        max_square: float | None = Query(None, ge=0, description="Максимальная площадь объекта"),
+        available: bool | None = Query(
+            None, description="true — только непроданные объекты в наличии"),
         db: AsyncSession = Depends(get_async_db)):
     """
-    Возвращает список квартир в продаже в соответствии с указанными параметрами пагинации.
-    :param page:
-    :param page_size:
-    :param db:
-    :return:
+    Возвращает список всех активных объектов с поддержкой фильтров.
     """
-    total_stmt = select(func.count()).select_from(ObjectModel).where(ObjectModel.on_sale == True)
+    # Проверка логики min_price <= max_price
+    if min_price is not None and max_price is not None and min_price > max_price:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="min_price не может быть больше max_price",
+        )
+
+    # Формируем список фильтров
+    filters = []
+    if available is not None:
+        filters.append(ObjectModel.on_sale == True if available else ObjectModel.on_sale == False)
+    if project_id is not None:
+        filters.append(ObjectModel.project_id == project_id)
+    if min_price is not None:
+        filters.append(ObjectModel.price >= min_price)
+    if max_price is not None:
+        filters.append(ObjectModel.price <= max_price)
+    if min_square is not None:
+        filters.append(ObjectModel.square >= min_square)
+    if max_square is not None:
+        filters.append(ObjectModel.square <= max_square)
+
+    total_stmt = select(func.count()).select_from(ObjectModel).where(*filters)
     total = await db.scalar(total_stmt) or 0
 
-    stmt = (select(ObjectModel).where(ObjectModel.on_sale == True).order_by(ObjectModel.id).offset((page - 1) * page_size).limit(page_size))
-    result = await db.scalars(stmt)
-    db_objects = result.all()
+    # Выборка товаров с фильтрами и пагинацией
+    objects_stmt = (
+        select(ObjectModel)
+        .where(*filters)
+        .order_by(ObjectModel.id)
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+    )
+    objects = (await db.scalars(objects_stmt)).all()
+
     return {
-        "objects": db_objects, "total": total, "page": page, "page_size": page_size} if db_objects else "No objects"
+        "objects": objects,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+    }
+
+
+# @router.get('/', response_model=ObjectList)
+# async def get_all_objects(
+#         page: int = Query(1, ge=1),
+#         page_size: int = Query(20, ge=1, le=100),
+#         db: AsyncSession = Depends(get_async_db)):
+#     """
+#     Возвращает список квартир в продаже в соответствии с указанными параметрами пагинации.
+#     :param page:
+#     :param page_size:
+#     :param db:
+#     :return:
+#     """
+#     total_stmt = select(func.count()).select_from(ObjectModel).where(ObjectModel.on_sale == True)
+#     total = await db.scalar(total_stmt) or 0
+#
+#     stmt = (select(ObjectModel).where(ObjectModel.on_sale == True).order_by(ObjectModel.id).offset(
+#         (page - 1) * page_size).limit(page_size))
+#     result = await db.scalars(stmt)
+#     db_objects = result.all()
+#     return {
+#         "objects": db_objects, "total": total, "page": page, "page_size": page_size} if db_objects else "No objects"
 
 
 @router.get("/project/{project_id}", response_model=list[ObjectSchema])
